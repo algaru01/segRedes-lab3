@@ -32,6 +32,8 @@ def routeApp(app):
             f.write(f"{user}:{hashed_pswd}\n")
             f.close()
 
+        os.makedirs(f"./{user}", exist_ok=True)
+
         token = uuid4()
 
         g_dict_tokens[user] = token
@@ -87,6 +89,7 @@ def routeApp(app):
 
         filepath = f'{username}/{doc_id}.json'
 
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -124,6 +127,7 @@ def routeApp(app):
 
         filepath = f'{username}/{doc_id}.json'
 
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -140,7 +144,7 @@ def routeApp(app):
         if request.data is None:
             return make_response('Missing JSON file', 400)
 
-        filepath = f'{username}/{username}/{doc_id}.json'
+        filepath = f'{username}/{doc_id}.json'
         try:
             os.remove(filepath)
         except FileNotFoundError:
@@ -158,10 +162,12 @@ def routeApp(app):
 
         if request.data is None:
             return make_response('Missing JSON file', 400)
-
-        response = {}
         
+        response = []
         for file in os.listdir(f'./{username}'):
-            filepath = f'{username}/{username}/{doc_id}.json'
+            filepath = f'{username}/{file}'
+            with open(filepath, 'r', encoding='utf-8') as f:
+                response.append(json.load(f))
 
+        return response
 
