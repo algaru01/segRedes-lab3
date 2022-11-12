@@ -5,6 +5,9 @@ from uuid import uuid4
 import json
 import os
 
+import threading
+import time
+
 from hmac import compare_digest as compare_hash 
 
 from flask import make_response, request, send_from_directory
@@ -12,6 +15,12 @@ from flask import make_response, request, send_from_directory
 g_dict_tokens = {}
 
 def routeApp(app):
+
+    def invalidate_user_token(user):
+        time.sleep(10)
+        print("ey")
+        del g_dict_tokens[user]
+
 
     @app.route('/signup', methods=['POST'])
     def signup():
@@ -37,6 +46,7 @@ def routeApp(app):
         token = uuid4()
 
         g_dict_tokens[user] = token
+        threading.Thread(target=invalidate_user_token, args=(user,)).start()
 
         return {"access_token": str(token)}
 
@@ -70,6 +80,7 @@ def routeApp(app):
         token = uuid4()
 
         g_dict_tokens[user] = token
+        threading.Thread(target=invalidate_user_token, args=(user,)).start()
 
         return {"access_token": str(token)}
 
