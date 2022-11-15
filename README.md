@@ -72,9 +72,19 @@ añadir _myserver.local_
 Este paso es importante puesto que mi certificado provisto solo funcionará para este dominio _myserver.local_.
 
 ## Ejcución del servidor
+ 
+ Crea un entorno virtual y activalo:
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-Para ejecutar el servidor lance el siguiente comando:
+Instala todas las dependencias:
+```shell
+pip install -r requirements.txt
+```
 
+Para lanzar el servidor ejecute el siguiente comando:
 ```
 python3 server_script.py -r <root_directory>
 ```
