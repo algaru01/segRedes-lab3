@@ -43,10 +43,11 @@ sudo cp cert/server.crt /usr/local/share/ca-certificates/
 sudo update-ca-certificates
 ```
 
-En caso de que haya creado un certificado autofirmado propio para probar el sistema, sustituya <server.crt> por su ruta. Recuerde que si va a seguir por esta vía, deberá cambiar la ruta del certificado y la llave pública que se pasa al servidor al lanzar su script. Esto es la linea:
+En caso de que haya creado un certificado autofirmado propio para probar el sistema, sustituya <server.crt> por su ruta. Recuerde que si va a seguir por esta vía, deberá cambiar la ruta del certificado y la llave pública que se pasa al servidor al lanzar su script. Esto es, las constantes
 
 ```
-context.load_cert_chain(<server.crt>, <server.key>)
+CERT_PATH = "cert/server.crt"
+CERT_KEY_PATH = "cert/server.key"
 ```
 
 ## Resolver myserver.local
