@@ -91,3 +91,50 @@ python3 server_script.py -r <root_directory>
 Donde _<root_directory>_ es el directorio donde se almacenarán los ficheros _json_ de los usuarios.
 
 Además, en caso de hacer uso del certificado que yo proveo, será necesario introducir su _passphrase_: **_segredes_**.
+
+## Pruebas Cliente
+Para probar el cliente puede usar los siguientes comandos _curl_:
+ * Para _version/_
+ ```
+ curl -X GET -H 'Content-Type: application/json' https://myserver.local:5000/version
+```
+ * Para _signup/_
+ ```
+curl -X POST -H 'Content-Type: application/json' -d '{"username":<nombre_usuario>,"password":<contraseña>}' https://myserver.local:5000/signup
+```
+
+ * Para _login/_
+ ```
+curl -X POST -H 'Content-Type: application/json' -d '{"username":<nombre_usuario>,"password":<contraseña>}' https://myserver.local:5000/login
+```
+
+Estos 2 últimos devolverán un token que deberá ser usado en los siguientes
+
+ * Para **subir** un archivo _<username>/<doc_id>_
+ ```
+curl -X POST -H 'Content-Type: application/json' -H 'Authorization: <token>' --data @<archivo_json> https://myserver.local:5000/<username>/<doc_id>
+```
+
+ * Para **actualizar** un archivo _<username>/<doc_id>_
+ ```
+curl -X PUT -H 'Content-Type: application/json' -H 'Authorization: <token>' --data @<archivo_json> https://myserver.local:5000/<username>/<doc_id>
+```
+
+Cabe recordar que el archivo _json_ enviado debe tener el parámetro '_doc_content_'.
+
+ * Para **obtener** un archivo _<username>/<doc_id>_
+ ```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: <token>' https://myserver.local:5000/<username>/<doc_id>
+```
+
+ * Para **borrar** un archivo _<username>/<doc_id>_
+ ```
+curl -X DELETE -H 'Content-Type: application/json' -H 'Authorization: <token>' https://myserver.local:5000/<username>/<doc_id>
+```
+
+ * Para **obtener todos** los archivo _<username>/_all_docs_
+ ```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: <token>' https://myserver.local:5000/<username>/_all_docs
+```
+ 
+ 
