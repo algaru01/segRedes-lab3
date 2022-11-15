@@ -12,6 +12,8 @@ from hmac import compare_digest as compare_hash
 
 from flask import make_response, request, send_from_directory
 
+VERSION = "1.0"
+
 HEADER_AUTHORIZATION = "Authorization"
 
 PARAM_USERNAME = "username"
@@ -32,6 +34,9 @@ def routeApp(app, root_directory):
         time.sleep(300)
         del g_dict_tokens[user]
 
+    @app.route('/version', methods=['GET'])
+    def get_version():      
+        return make_response(f"Current version is {VERSION}", 200)
 
     @app.route('/signup', methods=['POST'])
     def signup():
@@ -109,6 +114,9 @@ def routeApp(app, root_directory):
 
     @app.route('/<username>/<doc_id>', methods=['POST'])
     def create_json(username, doc_id):
+        if not request.is_json:
+            return make_response('Missing JSON', 400)
+
         if HEADER_AUTHORIZATION not in request.headers:
             return make_response(f"Missing '{HEADER_AUTHORIZATION}' in header.", 400)
         if username not in g_dict_tokens.keys():
@@ -116,15 +124,10 @@ def routeApp(app, root_directory):
         if g_dict_tokens[username] != request.headers[HEADER_AUTHORIZATION]:
             return make_response("Invalid token", 401)
 
-        if not request.is_json:
-            return make_response('Missing JSON', 400)
-
         if request.data is None:
             return make_response('Missing JSON file', 400)
-
         if PARAM_DOC_CONTENT not in request.data.decode():
             return make_response(f"Missing '{PARAM_DOC_CONTENT}' param", 400)
-
         if doc_id == "_all_docs":
             return make_response('Forbidden doc id.', 400)
 
@@ -140,11 +143,11 @@ def routeApp(app, root_directory):
         
     @app.route('/<username>/<doc_id>', methods=['GET'])
     def get_json(username, doc_id):
-        if username not in g_dict_tokens.keys():
-            return make_response("Invalid token", 401)
-
         if not request.is_json:
             return make_response('Missing JSON', 400)
+
+        if username not in g_dict_tokens.keys():
+            return make_response("Invalid token", 401)
 
         filepath = f'{root_directory}/{username}/{doc_id}.json'
         try:
@@ -157,6 +160,9 @@ def routeApp(app, root_directory):
 
     @app.route('/<username>/<doc_id>', methods=['PUT'])
     def update_json(username, doc_id):
+        if not request.is_json:
+            return make_response('Missing JSON.', 400)
+
         if HEADER_AUTHORIZATION not in request.headers:
             return make_response(f"Missing '{HEADER_AUTHORIZATION}' in header.", 400)
         if username not in g_dict_tokens.keys():
@@ -164,15 +170,10 @@ def routeApp(app, root_directory):
         if g_dict_tokens[username] != request.headers[HEADER_AUTHORIZATION]:
             return make_response("Invalid token.", 401)
 
-        if not request.is_json:
-            return make_response('Missing JSON.', 400)
-
         if request.data is None:
             return make_response('Missing JSON file.', 400)
-
         if PARAM_DOC_CONTENT not in request.data.decode():
             return make_response(f"Missing '{PARAM_DOC_CONTENT}' param", 400)
-
         if doc_id == "_all_docs":
             return make_response('Forbidden doc id.', 400)
 
@@ -188,15 +189,15 @@ def routeApp(app, root_directory):
 
     @app.route('/<username>/<doc_id>', methods=['DELETE'])
     def delete_json(username, doc_id):
+        if not request.is_json:
+            return make_response('Missing JSON', 400)
+
         if HEADER_AUTHORIZATION not in request.headers:
             return make_response(f"Missing '{HEADER_AUTHORIZATION}' in header.", 400)
         if username not in g_dict_tokens.keys():
             return make_response("User is not logged in.", 401)
         if g_dict_tokens[username] != request.headers[HEADER_AUTHORIZATION]:
             return make_response("Invalid token.", 401)
-
-        if not request.is_json:
-            return make_response('Missing JSON', 400)
 
         filepath = f'{root_directory}/{username}/{doc_id}.json'
         try:
@@ -208,18 +209,15 @@ def routeApp(app, root_directory):
 
     @app.route('/<username>/_all_docs', methods=['GET'])
     def get_all_jsons(username):
+        if not request.is_json:
+            return make_response('Missing JSON', 400)
+
         if HEADER_AUTHORIZATION not in request.headers:
             return make_response(f"Missing '{HEADER_AUTHORIZATION}' in header.", 400)
         if username not in g_dict_tokens.keys():
             return make_response("User is not logged in.", 401)
         if g_dict_tokens[username] != request.headers[HEADER_AUTHORIZATION]:
             return make_response("Invalid token.", 401)
-
-        if not request.is_json:
-            return make_response('Missing JSON', 400)
-
-        if request.data is None:
-            return make_response('Missing JSON file', 400)
         
         response = []
         try:
