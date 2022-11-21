@@ -15,7 +15,7 @@ El funcionamiento de esta version de API RESTFUL es muy simple:
  * Una vez en el sistema, el ususario puede desde **_/<username>/<doc_id>_** crear, actualizar, eliminar y hasta obtener uno o todos sus archivos _json_ sustituyendo <doc_id> por _all_docs.
  Estos archivos se almacenan en el servidor en _<ruta_raiz>/<username>/<doc_id>_. Donde _<ruta_raiz>_ es un argumento a la hora de lanzar el server.
  
-En cualquier caso, todos los usuarios que inicien sesión en el sistema obtendrán un **token de sesión** de 5 minutos de expiración. Siempre que un usuario quiera accedes a sus archivos _json_ tendrá que aportar este token en la cabecera con el nombre **Authorization**.
+En cualquier caso, todos los usuarios que inicien sesión en el sistema obtendrán un **token de sesión** de 5 minutos de expiración. Siempre que un usuario quiera acceder a sus archivos _json_ tendrá que aportar este token en la cabecera con el nombre **Authorization**.
 Pasados los 5 minutos, un hilo despertará y eliminará este token, por lo que los usuarios deberán **loguear de nuevo** en el sistema.
 
 ## Certificados
